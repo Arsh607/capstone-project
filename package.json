@@ -1,0 +1,36 @@
+{
+  "name": "capstone-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "build": "tsc",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arsh607/capstone-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Arsh607/capstone-project/issues"
+  },
+  "homepage": "https://github.com/Arsh607/capstone-project#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "express": "^5.2.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.0",
+    "firebase-admin": "^13.7.0"
+  }
+}
