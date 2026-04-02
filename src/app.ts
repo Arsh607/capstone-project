@@ -3,7 +3,7 @@ import { HTTP_STATUS } from './constants/httpsConstants';
 
 const app: Express = express();
 
-app.get('api/v1/health', (req: Request, res: Response) => {
+app.get('/api/v1/health', (req: Request, res: Response) => {
     res.status(HTTP_STATUS.OK).json({
         status: "OK",
         uptime: process.uptime(),
