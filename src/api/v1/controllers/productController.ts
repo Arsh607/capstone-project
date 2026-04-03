@@ -17,13 +17,18 @@ export const getAll = async (req: Request, res: Response, next: NextFunction): P
 
 export const getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
-        const id = Number(req.params.id);
+        const id = (req.params.id as string);
         const getSpecificProduct = await productServices.getById(id);
+        if (!getSpecificProduct) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+                message: 'Product not found'
+            });
+        } else {
         res.status(HTTP_STATUS.OK).json({
             message: 'Product retrieved successfully',
             data: getSpecificProduct
         });
-    } catch (error) {
+    }} catch (error) {
         next(error);
     }
 };
@@ -43,7 +48,7 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
 
 export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
-        const id = Number(req.params.id)
+        const id = (req.params.id as string)
         const updatedProduct = await productServices.updateProduct(id, req.body);
 
         res.status(HTTP_STATUS.OK).json({
@@ -57,7 +62,7 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
 
 export const deleteProduct = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
-        const id = Number(req.params.id);
+        const id = (req.params.id as string);
         const deletedProduct = await productServices.deleteProduct(id);
 
         res.status(HTTP_STATUS.OK).json({
