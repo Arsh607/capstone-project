@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express, {Express,Request, Response} from 'express';
 import { HTTP_STATUS } from './constants/httpsConstants';
 import productRouter from './api/v1/routes/productRoutes';
