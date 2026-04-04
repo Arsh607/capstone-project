@@ -20,7 +20,7 @@ export const createProduct = async (data: CreateProductInput): Promise<Product> 
     return productRepository.createNewProduct(newProduct);
 };
 
-export const updateProduct = (id: string, data: UpdateProductInput): Promise<Product> => {
+export const updateProduct = (id: string, data: UpdateProductInput): Promise<Product | null> => {
     return productRepository.updateProductFromDB(id, data);
 };
 
