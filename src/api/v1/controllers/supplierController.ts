@@ -1,6 +1,7 @@
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
 import { Request, Response, NextFunction } from "express";
 import * as supplierService from "../services/supplierServices";
+import { UpdateSupplier, CreateSupplier, Supplier} from "../models/supplierModel";
 
 export const getAll = async (
   req: Request,
@@ -26,7 +27,7 @@ export const getById = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = String(req.params.id);
     const getSupplierById = await supplierService.getById(id);
 
     if (!getSupplierById) {
@@ -52,13 +53,13 @@ export const create = async (
 ): Promise<void> => {
   try {
     const { name, email, phoneNumber, address } = req.body;
-
-    const createSupplier = await supplierService.createNewSupplier(
+    
+    const createSupplier = await supplierService.createNewSupplier({
       name,
       email,
       phoneNumber,
       address
-    );
+    });
 
     res.status(HTTP_STATUS.CREATED).json({
       message: "Supplier created successfully",
@@ -75,7 +76,7 @@ export const update = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = String(req.params.id);
     const updateSupplier = await supplierService.update(id, req.body);
 
     if (!updateSupplier) {
@@ -100,7 +101,7 @@ export const deleteSupplier = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = String(req.params.id);
     const deleteSupplierById = await supplierService.deleteSupplier(id);
 
     if (!deleteSupplierById) {
