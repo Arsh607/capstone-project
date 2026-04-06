@@ -1,4 +1,4 @@
-import * as transactionServices from "../services/transactionServices";
+import * as transactionServices from '../services/transactionServices';
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
 
@@ -26,7 +26,7 @@ export const getById = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = String(req.params.id);
     const transaction = await transactionServices.getTransactionById(id);
 
     if (!transaction) {
@@ -76,7 +76,7 @@ export const update = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = String(req.params.id);
     const updatedTransaction = await transactionServices.updateTransaction(id, req.body);
 
     if (!updatedTransaction) {
@@ -101,7 +101,7 @@ export const deleteTransaction = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = req.params.id;
+    const id = String(req.params.id);
     const deletedTransaction = await transactionServices.deleteTransaction(id);
 
     if (!deletedTransaction) {
