@@ -3,10 +3,13 @@ dotenv.config();
 import express, {Express,Request, Response} from 'express';
 import { HTTP_STATUS } from './constants/httpsConstants';
 import productRouter from './api/v1/routes/productRoutes';
+import supplierRouter from './api/v1/routes/supplierRoutes';
+import morgan from 'morgan';
 
 const app: Express = express();
 
 app.use(express.json());
+app.use(morgan('combined'));
 app.get('/api/v1/health', (req: Request, res: Response) => {
     res.status(HTTP_STATUS.OK).json({
         status: "OK",
@@ -16,5 +19,6 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
     })
 });
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/suppliers', supplierRouter);
 
 export default app;
