@@ -48,6 +48,7 @@ export const createTransaction = async (
   const newTransaction: InventoryTransaction = {
     id: nextId,
     ...data,
+    createdAt: new Date().toISOString()
   };
 
   return transactionRepository.createTransactionInDB(newTransaction);

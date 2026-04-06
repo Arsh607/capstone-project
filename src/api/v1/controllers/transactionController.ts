@@ -51,13 +51,12 @@ export const create = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { productId, quantityChanged, type, date, notes } = req.body;
+    const { productId, quantityChanged, type, notes } = req.body;
 
     const newTransaction = await transactionServices.createTransaction({
       productId,
       quantityChanged,
       type,
-      date,
       notes,
     });
 

@@ -68,6 +68,7 @@ export const updateTransactionInDB = async (
     ...existingTransaction,
     ...data,
     id: existingTransaction.id,
+    updatedAt: new Date().toISOString()
   };
 
   await docRef.set(updatedTransaction);
