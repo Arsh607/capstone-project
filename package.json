@@ -24,8 +24,10 @@
   "homepage": "https://github.com/Arsh607/capstone-project#readme",
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^25.5.0",
     "express": "^5.2.1",
+    "morgan": "^1.10.1",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
   },
