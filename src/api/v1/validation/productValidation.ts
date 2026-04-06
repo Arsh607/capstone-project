@@ -16,4 +16,4 @@ export const updateProductValidation = Joi.object({
     quantity: Joi.number().min(0),
     category: Joi.string().valid("Electronics", "Office Supplies", "Furniture", "Food", "Home Supplies"),
     supplierId: Joi.string().pattern(/^supp_\d+$/)
-}).unknown(false);
+}).min(1).unknown(false);
