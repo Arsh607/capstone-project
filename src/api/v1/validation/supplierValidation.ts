@@ -13,3 +13,7 @@ export const updateSupplierValidation = Joi.object({
     phoneNumber: Joi.string().pattern(/^[0-9]{10}$/),
     address: Joi.string()
 }).unknown(false);
+
+export const supplierIdValidation = Joi.object({
+    id: Joi.string().pattern(/^supp_\d+$/).required()
+});

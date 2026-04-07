@@ -13,3 +13,7 @@ export const updateTransactionValidation = Joi.object({
 })
   .min(1)
   .unknown(false);
+
+export const transactionIdValidation = Joi.object({
+    id: Joi.string().pattern(/^trans_\d+$/).required()
+});

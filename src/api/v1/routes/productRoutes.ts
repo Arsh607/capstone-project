@@ -1,5 +1,8 @@
 import express, { Router } from "express";
 import * as productController from '../controllers/productController';
+import { createProductValidation, updateProductValidation } from "../validation/productValidation";
+import { validateBody, validateParams } from "../middleware/validation";
+
 
 const router: Router = express.Router();
 
