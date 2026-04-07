@@ -7,6 +7,7 @@ import supplierRouter from './api/v1/routes/supplierRoutes';
 import transactionRouter from './api/v1/routes/transactionRoutes';
 import morgan from 'morgan';
 import { errorHandler } from './api/v1/middleware/errorHandler';
+import setupSwagger from './config/swagger';
 
 const app: Express = express();
 
@@ -23,6 +24,7 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/suppliers', supplierRouter);
 app.use('/api/v1/transactions', transactionRouter);
+setupSwagger(app)
 app.use(errorHandler);
 
 export default app;
