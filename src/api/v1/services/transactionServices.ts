@@ -5,7 +5,8 @@ import {
   CreateTransactionInput,
   UpdateTransactionInput,
 } from "../models/transactionModel";
-import { Product } from "../models/productModel";
+import { AppError } from '../utils/AppError';
+import { HTTP_STATUS } from "../../../constants/httpsConstants";
 
 export const getAllTransactions = async (): Promise<InventoryTransaction[]> => {
   return transactionRepository.getAllTransactionsFromDB();
@@ -13,8 +14,14 @@ export const getAllTransactions = async (): Promise<InventoryTransaction[]> => {
 
 export const getTransactionById = async (
   id: string
-): Promise<InventoryTransaction | null> => {
-  return transactionRepository.getTransactionByIdFromDB(id);
+): Promise<InventoryTransaction> => {
+  const transaction = await transactionRepository.getTransactionByIdFromDB(id);
+
+  if (!transaction) {
+    throw new AppError("Transaction not found", HTTP_STATUS.NOT_FOUND);
+  }
+
+  return transaction;
 };
 
 export const createTransaction = async (
@@ -23,7 +30,7 @@ export const createTransaction = async (
   const product = await productRepository.getProductById(data.productId);
 
   if (!product) {
-    throw new Error("Product not found");
+    throw new AppError("Product not found", HTTP_STATUS.NOT_FOUND);
   }
 
   let newQuantity = product.quantity;
@@ -32,7 +39,7 @@ export const createTransaction = async (
     newQuantity += data.quantityChanged;
   } else if (data.type === "remove") {
     if (product.quantity < data.quantityChanged) {
-      throw new Error("Insufficient stock");
+      throw new AppError("Insufficient stock", HTTP_STATUS.BAD_REQUEST);
     }
     newQuantity -= data.quantityChanged;
   } else if (data.type === "adjust") {
@@ -48,7 +55,7 @@ export const createTransaction = async (
   const newTransaction: InventoryTransaction = {
     id: nextId,
     ...data,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   };
 
   return transactionRepository.createTransactionInDB(newTransaction);
@@ -57,12 +64,24 @@ export const createTransaction = async (
 export const updateTransaction = async (
   id: string,
   data: UpdateTransactionInput
-): Promise<InventoryTransaction | null> => {
-  return transactionRepository.updateTransactionInDB(id, data);
+): Promise<InventoryTransaction> => {
+  const updatedTransaction = await transactionRepository.updateTransactionInDB(id, data);
+
+  if (!updatedTransaction) {
+    throw new AppError("Transaction not found", HTTP_STATUS.NOT_FOUND);
+  }
+
+  return updatedTransaction;
 };
 
 export const deleteTransaction = async (
   id: string
-): Promise<InventoryTransaction | null> => {
-  return transactionRepository.deleteTransactionFromDB(id);
+): Promise<InventoryTransaction> => {
+  const deletedTransaction = await transactionRepository.deleteTransactionFromDB(id);
+
+  if (!deletedTransaction) {
+    throw new AppError("Transaction not found", HTTP_STATUS.NOT_FOUND);
+  }
+
+  return deletedTransaction;
 };
