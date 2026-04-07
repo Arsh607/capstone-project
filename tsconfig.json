@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES6", // Specifies the target JavaScript version.
+        "types": ["node"],
         "module": "commonjs", // Specifies the module system to use.
         "strict": true, // Enable all strict type-checking options.
         "esModuleInterop": true, // Enables compatibility with CommonJS modules.
@@ -15,6 +16,6 @@
         "noImplicitThis": true, // Raise error on 'this' expressions with an implied 'any' type.
         "alwaysStrict": true // Ensure 'use strict' is always emitted.
     },
-    "include": ["src/**/*", "tests/**/*"], // Include all TypeScript files in the 'src' and 'tests' directories.
+    "include": ["src/**/*", "tests/**/*", "scripts/**/*"], // Include all TypeScript files in the 'src' and 'tests' directories.
     "exclude": ["node_modules", "dist"] // Exclude 'node_modules' and 'dist' directories.
 }
