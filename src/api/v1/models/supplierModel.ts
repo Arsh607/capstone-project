@@ -2,20 +2,20 @@ export interface Supplier {
     id: string,
     name: string,
     email: string,
-    phoneNumber: number
+    phoneNumber: string,
     address: string
 };
 
 export interface CreateSupplier {
     name: string,
     email: string,
-    phoneNumber: number,
+    phoneNumber: string,
     address: string
 };
 
 export interface UpdateSupplier {
     name?: string,
     email?: string,
-    phoneNumber?: number,
+    phoneNumber?: string,
     address?: string  
-}
+};
