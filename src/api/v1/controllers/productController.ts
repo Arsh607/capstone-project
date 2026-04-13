@@ -8,7 +8,16 @@ export const getAll = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const getAllProducts = await productServices.getAll();
+    const filters = {
+        category: req.query.category as string | undefined,
+        supplierId: req.query.supplierId as string | undefined,
+        minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
+        maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
+        minQuantity: req.query.minQuantity ? Number(req.query.minQuantity) : undefined,
+        maxQuantity: req.query.maxQuantity ? Number(req.query.maxQuantity) : undefined,
+    };
+
+    const getAllProducts = await productServices.getAll(filters);
 
     res.status(HTTP_STATUS.OK).json({
       message: "Products retrieved successfully",

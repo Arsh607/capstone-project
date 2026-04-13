@@ -21,3 +21,18 @@ export const updateProductValidation = Joi.object({
 export const productIdValidation = Joi.object({
     id: Joi.string().pattern(/^prod_\d+$/).required()
 });
+
+export const productFilterValidation = Joi.object({
+  category: Joi.string().valid(
+    "Electronics",
+    "Office Supplies",
+    "Furniture",
+    "Food",
+    "Home Supplies"
+  ),
+  supplierId: Joi.string().pattern(/^supp_\d+$/),
+  minPrice: Joi.number().min(0),
+  maxPrice: Joi.number().min(0),
+  minQuantity: Joi.number().min(0),
+  maxQuantity: Joi.number().min(0),
+});

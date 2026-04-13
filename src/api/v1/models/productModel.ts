@@ -33,4 +33,4 @@ export interface ProductFilter {
   maxPrice?: number;
   minQuantity?: number;
   maxQuantity?: number;
-}
+};

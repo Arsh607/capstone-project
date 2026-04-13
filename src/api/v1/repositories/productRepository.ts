@@ -1,17 +1,40 @@
 import { db } from "../../../config/firebaseConfig";
-import { Product, UpdateProductInput } from '../models/productModel';
+import { Product, ProductFilter, UpdateProductInput } from '../models/productModel';
 
 const PRODUCT_COLLECTION = 'products';
 const COUNTER_COLLECTION = 'count';
 const PRODUCT_COUNTER_DOC = 'products';
 
-export const getAllProducts = async (): Promise<Product[]> => {
-    const snapshot = await db.
-        collection(PRODUCT_COLLECTION).
-        orderBy("id").
-        get();
+export const getAllProducts = async (filters: ProductFilter): Promise<Product[]> => {
+let query: FirebaseFirestore.Query = db.collection(PRODUCT_COLLECTION);
 
-    return snapshot.docs.map((doc) => doc.data() as Product);
+  if (filters.category) {
+    query = query.where("category", "==", filters.category);
+  }
+
+  if (filters.supplierId) {
+    query = query.where("supplierId", "==", filters.supplierId);
+  }
+
+  if (filters.minPrice !== undefined) {
+    query = query.where("price", ">=", filters.minPrice);
+  }
+
+  if (filters.maxPrice !== undefined) {
+    query = query.where("price", "<=", filters.maxPrice);
+  }
+
+  if (filters.minQuantity !== undefined) {
+    query = query.where("quantity", ">=", filters.minQuantity);
+  }
+
+  if (filters.maxQuantity !== undefined) {
+    query = query.where("quantity", "<=", filters.maxQuantity);
+  }
+
+  const snapshot = await query.get();
+
+  return snapshot.docs.map((doc) => doc.data() as Product);
                             
 };
 

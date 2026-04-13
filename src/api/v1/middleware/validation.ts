@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
+import { ObjectSchema } from "joi";
+import { AppError } from "../utils/AppError";
 
 export const validateBody = (schema: any) => (req: Request, res: Response, next: NextFunction) => {
     const body = req.body;
@@ -40,3 +42,26 @@ export const validateParams =
     req.params = value;
     next();
   };
+
+export const validateQuery = (schema: ObjectSchema) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const { error, value } = schema.validate(req.query, {
+      abortEarly: false,   
+      stripUnknown: true,  
+    });
+
+    if (error) {
+      next(
+        new AppError(
+          error.details.map((d) => d.message).join(", "),
+          HTTP_STATUS.BAD_REQUEST
+        )
+      );
+      return;
+    }
+
+    req.query = value;
+
+    next();
+  };
+};
