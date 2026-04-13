@@ -6,6 +6,7 @@ import productRouter from './api/v1/routes/productRoutes';
 import supplierRouter from './api/v1/routes/supplierRoutes';
 import authRouter from './api/v1/routes/authRoutes';
 import transactionRouter from './api/v1/routes/transactionRoutes';
+import adminRouter from './api/v1/routes/adminRoutes';
 import morgan from 'morgan';
 import { errorHandler } from './api/v1/middleware/errorHandler';
 import setupSwagger from './config/swagger';
@@ -26,6 +27,7 @@ app.use('/api/v1/products', productRouter);
 app.use('/api/v1/suppliers', supplierRouter);
 app.use('/api/v1/transactions', transactionRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/admin', adminRouter);
 setupSwagger(app)
 app.use(errorHandler);
 
