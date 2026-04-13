@@ -1,6 +1,10 @@
 import express, { Router } from "express";
-import * as inventoryController from '../controllers/transactionController';
-import { createTransactionValidation, updateTransactionValidation, transactionIdValidation } from "../validation/transactionValidation";
+import * as inventoryController from "../controllers/transactionController";
+import {
+  createTransactionValidation,
+  updateTransactionValidation,
+  transactionIdValidation,
+} from "../validation/transactionValidation";
 import { validateParams, validateBody } from "../middleware/validation";
 import { authenticate } from "../middleware/authenticate";
 
@@ -13,11 +17,15 @@ const router: Router = express.Router();
  *     summary: Get all inventory transactions
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Transactions retrieved successfully
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
  */
-router.get('/', authenticate, inventoryController.getAll);
+router.get("/", authenticate, inventoryController.getAll);
 
 /**
  * @openapi
@@ -26,6 +34,8 @@ router.get('/', authenticate, inventoryController.getAll);
  *     summary: Get a transaction by ID
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -36,10 +46,17 @@ router.get('/', authenticate, inventoryController.getAll);
  *     responses:
  *       200:
  *         description: Transaction retrieved successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Transaction not found
  */
-router.get('/:id', authenticate, validateParams(transactionIdValidation), inventoryController.getById);
+router.get(
+  "/:id",
+  authenticate,
+  validateParams(transactionIdValidation),
+  inventoryController.getById
+);
 
 /**
  * @openapi
@@ -48,6 +65,8 @@ router.get('/:id', authenticate, validateParams(transactionIdValidation), invent
  *     summary: Create a new inventory transaction
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -77,10 +96,17 @@ router.get('/:id', authenticate, validateParams(transactionIdValidation), invent
  *         description: Transaction created successfully
  *       400:
  *         description: Validation error or insufficient stock
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Product not found
  */
-router.post('/', authenticate, validateBody(createTransactionValidation), inventoryController.create);
+router.post(
+  "/",
+  authenticate,
+  validateBody(createTransactionValidation),
+  inventoryController.create
+);
 
 /**
  * @openapi
@@ -89,6 +115,8 @@ router.post('/', authenticate, validateBody(createTransactionValidation), invent
  *     summary: Update a transaction
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -112,11 +140,13 @@ router.post('/', authenticate, validateBody(createTransactionValidation), invent
  *     responses:
  *       200:
  *         description: Transaction updated successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Transaction not found
  */
 router.put(
-  '/:id',
+  "/:id",
   authenticate,
   validateParams(transactionIdValidation),
   validateBody(updateTransactionValidation),
@@ -130,6 +160,8 @@ router.put(
  *     summary: Delete a transaction
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -140,9 +172,16 @@ router.put(
  *     responses:
  *       200:
  *         description: Transaction deleted successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Transaction not found
  */
-router.delete('/:id', authenticate, validateParams(transactionIdValidation), inventoryController.deleteTransaction);
+router.delete(
+  "/:id",
+  authenticate,
+  validateParams(transactionIdValidation),
+  inventoryController.deleteTransaction
+);
 
 export default router;

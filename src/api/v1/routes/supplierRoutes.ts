@@ -1,9 +1,12 @@
 import express, { Router } from "express";
-import * as supplierController from '../controllers/supplierController';
-import { createSupplierValidation, updateSupplierValidation, supplierIdValidation } from "../validation/supplierValidation";
+import * as supplierController from "../controllers/supplierController";
+import {
+  createSupplierValidation,
+  updateSupplierValidation,
+  supplierIdValidation,
+} from "../validation/supplierValidation";
 import { validateBody, validateParams } from "../middleware/validation";
 import { authenticate } from "../middleware/authenticate";
-import { auth } from "firebase-admin";
 
 const router: Router = express.Router();
 
@@ -14,11 +17,15 @@ const router: Router = express.Router();
  *     summary: Get all suppliers
  *     tags:
  *       - Suppliers
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Suppliers retrieved successfully
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
  */
-router.get('/', authenticate, supplierController.getAll);
+router.get("/", authenticate, supplierController.getAll);
 
 /**
  * @openapi
@@ -27,6 +34,8 @@ router.get('/', authenticate, supplierController.getAll);
  *     summary: Get a supplier by ID
  *     tags:
  *       - Suppliers
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -37,10 +46,17 @@ router.get('/', authenticate, supplierController.getAll);
  *     responses:
  *       200:
  *         description: Supplier retrieved successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Supplier not found
  */
-router.get('/:id', authenticate, validateParams(supplierIdValidation), supplierController.getById);
+router.get(
+  "/:id",
+  authenticate,
+  validateParams(supplierIdValidation),
+  supplierController.getById
+);
 
 /**
  * @openapi
@@ -49,6 +65,8 @@ router.get('/:id', authenticate, validateParams(supplierIdValidation), supplierC
  *     summary: Create a new supplier
  *     tags:
  *       - Suppliers
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -78,8 +96,15 @@ router.get('/:id', authenticate, validateParams(supplierIdValidation), supplierC
  *         description: Supplier created successfully
  *       400:
  *         description: Validation error
+ *       401:
+ *         description: Unauthorized
  */
-router.post('/', authenticate, validateBody(createSupplierValidation), supplierController.create);
+router.post(
+  "/",
+  authenticate,
+  validateBody(createSupplierValidation),
+  supplierController.create
+);
 
 /**
  * @openapi
@@ -88,6 +113,8 @@ router.post('/', authenticate, validateBody(createSupplierValidation), supplierC
  *     summary: Update a supplier
  *     tags:
  *       - Suppliers
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -113,11 +140,13 @@ router.post('/', authenticate, validateBody(createSupplierValidation), supplierC
  *     responses:
  *       200:
  *         description: Supplier updated successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Supplier not found
  */
 router.put(
-  '/:id',
+  "/:id",
   authenticate,
   validateParams(supplierIdValidation),
   validateBody(updateSupplierValidation),
@@ -131,6 +160,8 @@ router.put(
  *     summary: Delete a supplier
  *     tags:
  *       - Suppliers
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -141,9 +172,16 @@ router.put(
  *     responses:
  *       200:
  *         description: Supplier deleted successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Supplier not found
  */
-router.delete('/:id', authenticate, validateParams(supplierIdValidation), supplierController.deleteSupplier);
+router.delete(
+  "/:id",
+  authenticate,
+  validateParams(supplierIdValidation),
+  supplierController.deleteSupplier
+);
 
 export default router;
