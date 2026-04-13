@@ -7,6 +7,7 @@ import {
 } from "../validation/transactionValidation";
 import { validateParams, validateBody } from "../middleware/validation";
 import { authenticate } from "../middleware/authenticate";
+import { isAuthorized } from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -15,6 +16,7 @@ const router: Router = express.Router();
  * /api/v1/transactions:
  *   get:
  *     summary: Get all inventory transactions
+ *     description: Accessible by admin, manager, and employee roles.
  *     tags:
  *       - Transactions
  *     security:
@@ -24,14 +26,22 @@ const router: Router = express.Router();
  *         description: Transactions retrieved successfully
  *       401:
  *         description: Unauthorized (missing or invalid token)
+ *       403:
+ *         description: Forbidden (insufficient role)
  */
-router.get("/", authenticate, inventoryController.getAll);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
+  inventoryController.getAll
+);
 
 /**
  * @openapi
  * /api/v1/transactions/{id}:
  *   get:
  *     summary: Get a transaction by ID
+ *     description: Accessible by admin, manager, and employee roles.
  *     tags:
  *       - Transactions
  *     security:
@@ -48,12 +58,15 @@ router.get("/", authenticate, inventoryController.getAll);
  *         description: Transaction retrieved successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Transaction not found
  */
 router.get(
   "/:id",
   authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
   validateParams(transactionIdValidation),
   inventoryController.getById
 );
@@ -63,6 +76,7 @@ router.get(
  * /api/v1/transactions:
  *   post:
  *     summary: Create a new inventory transaction
+ *     description: Accessible by admin, manager, and employee roles.
  *     tags:
  *       - Transactions
  *     security:
@@ -98,12 +112,15 @@ router.get(
  *         description: Validation error or insufficient stock
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Product not found
  */
 router.post(
   "/",
   authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
   validateBody(createTransactionValidation),
   inventoryController.create
 );
@@ -113,6 +130,7 @@ router.post(
  * /api/v1/transactions/{id}:
  *   put:
  *     summary: Update a transaction
+ *     description: Accessible by admin and manager roles only.
  *     tags:
  *       - Transactions
  *     security:
@@ -142,12 +160,15 @@ router.post(
  *         description: Transaction updated successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Transaction not found
  */
 router.put(
   "/:id",
   authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
   validateParams(transactionIdValidation),
   validateBody(updateTransactionValidation),
   inventoryController.update
@@ -158,6 +179,7 @@ router.put(
  * /api/v1/transactions/{id}:
  *   delete:
  *     summary: Delete a transaction
+ *     description: Accessible by admin and manager roles only.
  *     tags:
  *       - Transactions
  *     security:
@@ -174,12 +196,15 @@ router.put(
  *         description: Transaction deleted successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Transaction not found
  */
 router.delete(
   "/:id",
   authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
   validateParams(transactionIdValidation),
   inventoryController.deleteTransaction
 );

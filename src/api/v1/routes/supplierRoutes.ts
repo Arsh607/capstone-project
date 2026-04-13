@@ -7,6 +7,7 @@ import {
 } from "../validation/supplierValidation";
 import { validateBody, validateParams } from "../middleware/validation";
 import { authenticate } from "../middleware/authenticate";
+import { isAuthorized } from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -15,6 +16,7 @@ const router: Router = express.Router();
  * /api/v1/suppliers:
  *   get:
  *     summary: Get all suppliers
+ *     description: Accessible by admin, manager, and employee roles.
  *     tags:
  *       - Suppliers
  *     security:
@@ -24,14 +26,22 @@ const router: Router = express.Router();
  *         description: Suppliers retrieved successfully
  *       401:
  *         description: Unauthorized (missing or invalid token)
+ *       403:
+ *         description: Forbidden (insufficient role)
  */
-router.get("/", authenticate, supplierController.getAll);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
+  supplierController.getAll
+);
 
 /**
  * @openapi
  * /api/v1/suppliers/{id}:
  *   get:
  *     summary: Get a supplier by ID
+ *     description: Accessible by admin, manager, and employee roles.
  *     tags:
  *       - Suppliers
  *     security:
@@ -48,12 +58,15 @@ router.get("/", authenticate, supplierController.getAll);
  *         description: Supplier retrieved successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Supplier not found
  */
 router.get(
   "/:id",
   authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
   validateParams(supplierIdValidation),
   supplierController.getById
 );
@@ -63,6 +76,7 @@ router.get(
  * /api/v1/suppliers:
  *   post:
  *     summary: Create a new supplier
+ *     description: Accessible by admin role only.
  *     tags:
  *       - Suppliers
  *     security:
@@ -98,10 +112,13 @@ router.get(
  *         description: Validation error
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  */
 router.post(
   "/",
   authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateBody(createSupplierValidation),
   supplierController.create
 );
@@ -111,6 +128,7 @@ router.post(
  * /api/v1/suppliers/{id}:
  *   put:
  *     summary: Update a supplier
+ *     description: Accessible by admin role only.
  *     tags:
  *       - Suppliers
  *     security:
@@ -142,12 +160,15 @@ router.post(
  *         description: Supplier updated successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Supplier not found
  */
 router.put(
   "/:id",
   authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateParams(supplierIdValidation),
   validateBody(updateSupplierValidation),
   supplierController.update
@@ -158,6 +179,7 @@ router.put(
  * /api/v1/suppliers/{id}:
  *   delete:
  *     summary: Delete a supplier
+ *     description: Accessible by admin role only.
  *     tags:
  *       - Suppliers
  *     security:
@@ -174,12 +196,15 @@ router.put(
  *         description: Supplier deleted successfully
  *       401:
  *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Supplier not found
  */
 router.delete(
   "/:id",
   authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
   validateParams(supplierIdValidation),
   supplierController.deleteSupplier
 );
