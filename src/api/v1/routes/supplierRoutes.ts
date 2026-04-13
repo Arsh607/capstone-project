@@ -7,6 +7,7 @@ import {
 } from "../validation/supplierValidation";
 import { validateBody, validateParams } from "../middleware/validation";
 import { authenticate } from "../middleware/authenticate";
+import { isAuthorized } from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -25,7 +26,10 @@ const router: Router = express.Router();
  *       401:
  *         description: Unauthorized (missing or invalid token)
  */
-router.get("/", authenticate, supplierController.getAll);
+router.get("/", 
+  authenticate,
+  isAuthorized({hasRole: ["admin", "manager", "employee"]}), 
+  supplierController.getAll);
 
 /**
  * @openapi
@@ -54,6 +58,7 @@ router.get("/", authenticate, supplierController.getAll);
 router.get(
   "/:id",
   authenticate,
+  isAuthorized({hasRole: ["admin", "manager", "employee"]}),
   validateParams(supplierIdValidation),
   supplierController.getById
 );
@@ -102,6 +107,7 @@ router.get(
 router.post(
   "/",
   authenticate,
+  isAuthorized({hasRole: ["admin"]}),
   validateBody(createSupplierValidation),
   supplierController.create
 );
@@ -148,6 +154,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
+  isAuthorized({hasRole: ["admin"]}),
   validateParams(supplierIdValidation),
   validateBody(updateSupplierValidation),
   supplierController.update
@@ -180,6 +187,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
+  isAuthorized({hasRole: ["admin"]}),
   validateParams(supplierIdValidation),
   supplierController.deleteSupplier
 );

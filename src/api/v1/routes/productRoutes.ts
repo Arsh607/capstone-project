@@ -7,6 +7,7 @@ import {
 } from "../validation/productValidation";
 import { validateBody, validateParams } from "../middleware/validation";
 import { authenticate } from "../middleware/authenticate";
+import { isAuthorized } from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -25,7 +26,10 @@ const router: Router = express.Router();
  *       401:
  *         description: Unauthorized (missing or invalid token)
  */
-router.get("/", authenticate, productController.getAll);
+router.get("/", 
+  authenticate,
+  isAuthorized({hasRole: ["admin", "manager", "employee"]}), 
+  productController.getAll);
 
 /**
  * @openapi
@@ -54,6 +58,7 @@ router.get("/", authenticate, productController.getAll);
 router.get(
   "/:id",
   authenticate,
+  isAuthorized({hasRole: ["admin", "manager", "employee"]}),
   validateParams(productIdValidation),
   productController.getById
 );
@@ -110,6 +115,7 @@ router.get(
 router.post(
   "/",
   authenticate,
+  isAuthorized({hasRole: ["admin", "manager"]}),
   validateBody(createProductValidation),
   productController.create
 );
@@ -160,6 +166,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
+  isAuthorized({hasRole: ["admin", "manager"]}),
   validateParams(productIdValidation),
   validateBody(updateProductValidation),
   productController.update
@@ -192,6 +199,7 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
+  isAuthorized({hasRole: ["admin", "manager"]}),
   validateParams(productIdValidation),
   productController.deleteProduct
 );
