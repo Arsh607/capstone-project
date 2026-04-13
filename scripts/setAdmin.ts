@@ -1,3 +1,6 @@
+import dotenv from 'dotenv'
+dotenv.config();
+
 import { auth } from '../src/config/firebaseConfig';
 
 const uid = "Lt9yCJSVoogSqnugPrS1Iny3n3K2"; 
