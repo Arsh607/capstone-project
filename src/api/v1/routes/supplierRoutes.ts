@@ -2,6 +2,8 @@ import express, { Router } from "express";
 import * as supplierController from '../controllers/supplierController';
 import { createSupplierValidation, updateSupplierValidation, supplierIdValidation } from "../validation/supplierValidation";
 import { validateBody, validateParams } from "../middleware/validation";
+import { authenticate } from "../middleware/authenticate";
+import { auth } from "firebase-admin";
 
 const router: Router = express.Router();
 
@@ -16,7 +18,7 @@ const router: Router = express.Router();
  *       200:
  *         description: Suppliers retrieved successfully
  */
-router.get('/', supplierController.getAll);
+router.get('/', authenticate, supplierController.getAll);
 
 /**
  * @openapi
@@ -38,7 +40,7 @@ router.get('/', supplierController.getAll);
  *       404:
  *         description: Supplier not found
  */
-router.get('/:id', validateParams(supplierIdValidation), supplierController.getById);
+router.get('/:id', authenticate, validateParams(supplierIdValidation), supplierController.getById);
 
 /**
  * @openapi
@@ -77,7 +79,7 @@ router.get('/:id', validateParams(supplierIdValidation), supplierController.getB
  *       400:
  *         description: Validation error
  */
-router.post('/', validateBody(createSupplierValidation), supplierController.create);
+router.post('/', authenticate, validateBody(createSupplierValidation), supplierController.create);
 
 /**
  * @openapi
@@ -116,6 +118,7 @@ router.post('/', validateBody(createSupplierValidation), supplierController.crea
  */
 router.put(
   '/:id',
+  authenticate,
   validateParams(supplierIdValidation),
   validateBody(updateSupplierValidation),
   supplierController.update
@@ -141,6 +144,6 @@ router.put(
  *       404:
  *         description: Supplier not found
  */
-router.delete('/:id', validateParams(supplierIdValidation), supplierController.deleteSupplier);
+router.delete('/:id', authenticate, validateParams(supplierIdValidation), supplierController.deleteSupplier);
 
 export default router;

@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import * as inventoryController from '../controllers/transactionController';
 import { createTransactionValidation, updateTransactionValidation, transactionIdValidation } from "../validation/transactionValidation";
 import { validateParams, validateBody } from "../middleware/validation";
+import { authenticate } from "../middleware/authenticate";
 
 const router: Router = express.Router();
 
@@ -16,7 +17,7 @@ const router: Router = express.Router();
  *       200:
  *         description: Transactions retrieved successfully
  */
-router.get('/', inventoryController.getAll);
+router.get('/', authenticate, inventoryController.getAll);
 
 /**
  * @openapi
@@ -38,7 +39,7 @@ router.get('/', inventoryController.getAll);
  *       404:
  *         description: Transaction not found
  */
-router.get('/:id', validateParams(transactionIdValidation), inventoryController.getById);
+router.get('/:id', authenticate, validateParams(transactionIdValidation), inventoryController.getById);
 
 /**
  * @openapi
@@ -79,7 +80,7 @@ router.get('/:id', validateParams(transactionIdValidation), inventoryController.
  *       404:
  *         description: Product not found
  */
-router.post('/', validateBody(createTransactionValidation), inventoryController.create);
+router.post('/', authenticate, validateBody(createTransactionValidation), inventoryController.create);
 
 /**
  * @openapi
@@ -116,6 +117,7 @@ router.post('/', validateBody(createTransactionValidation), inventoryController.
  */
 router.put(
   '/:id',
+  authenticate,
   validateParams(transactionIdValidation),
   validateBody(updateTransactionValidation),
   inventoryController.update
@@ -141,6 +143,6 @@ router.put(
  *       404:
  *         description: Transaction not found
  */
-router.delete('/:id', validateParams(transactionIdValidation), inventoryController.deleteTransaction);
+router.delete('/:id', authenticate, validateParams(transactionIdValidation), inventoryController.deleteTransaction);
 
 export default router;

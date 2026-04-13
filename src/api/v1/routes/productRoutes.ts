@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import * as productController from '../controllers/productController';
 import { createProductValidation, updateProductValidation, productIdValidation } from "../validation/productValidation";
 import { validateBody, validateParams } from "../middleware/validation";
+import { authenticate } from "../middleware/authenticate";
 
 const router: Router = express.Router();
 
@@ -16,7 +17,7 @@ const router: Router = express.Router();
  *       200:
  *         description: Products retrieved successfully
  */
-router.get('/', productController.getAll);
+router.get('/', authenticate, productController.getAll);
 
 /**
  * @openapi
@@ -38,7 +39,7 @@ router.get('/', productController.getAll);
  *       404:
  *         description: Product not found
  */
-router.get('/:id', validateParams(productIdValidation), productController.getById);
+router.get('/:id', authenticate, validateParams(productIdValidation), productController.getById);
 
 /**
  * @openapi
@@ -85,7 +86,7 @@ router.get('/:id', validateParams(productIdValidation), productController.getByI
  *       400:
  *         description: Validation error
  */
-router.post('/', validateBody(createProductValidation), productController.create);
+router.post('/', authenticate, validateBody(createProductValidation), productController.create);
 
 /**
  * @openapi
@@ -128,6 +129,7 @@ router.post('/', validateBody(createProductValidation), productController.create
  */
 router.put(
   '/:id',
+  authenticate,
   validateParams(productIdValidation),
   validateBody(updateProductValidation),
   productController.update
@@ -153,6 +155,6 @@ router.put(
  *       404:
  *         description: Product not found
  */
-router.delete('/:id', validateParams(productIdValidation), productController.deleteProduct);
+router.delete('/:id', authenticate, validateParams(productIdValidation), productController.deleteProduct);
 
 export default router;
