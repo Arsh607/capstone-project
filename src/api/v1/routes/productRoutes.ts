@@ -1,7 +1,12 @@
 import express, { Router } from "express";
-import * as productController from '../controllers/productController';
-import { createProductValidation, updateProductValidation, productIdValidation } from "../validation/productValidation";
+import * as productController from "../controllers/productController";
+import {
+  createProductValidation,
+  updateProductValidation,
+  productIdValidation,
+} from "../validation/productValidation";
 import { validateBody, validateParams } from "../middleware/validation";
+import { authenticate } from "../middleware/authenticate";
 
 const router: Router = express.Router();
 
@@ -12,11 +17,15 @@ const router: Router = express.Router();
  *     summary: Get all products
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: Products retrieved successfully
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
  */
-router.get('/', productController.getAll);
+router.get("/", authenticate, productController.getAll);
 
 /**
  * @openapi
@@ -25,6 +34,8 @@ router.get('/', productController.getAll);
  *     summary: Get a product by ID
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -35,10 +46,17 @@ router.get('/', productController.getAll);
  *     responses:
  *       200:
  *         description: Product retrieved successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Product not found
  */
-router.get('/:id', validateParams(productIdValidation), productController.getById);
+router.get(
+  "/:id",
+  authenticate,
+  validateParams(productIdValidation),
+  productController.getById
+);
 
 /**
  * @openapi
@@ -47,6 +65,8 @@ router.get('/:id', validateParams(productIdValidation), productController.getByI
  *     summary: Create a new product
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -84,8 +104,15 @@ router.get('/:id', validateParams(productIdValidation), productController.getByI
  *         description: Product created successfully
  *       400:
  *         description: Validation error
+ *       401:
+ *         description: Unauthorized
  */
-router.post('/', validateBody(createProductValidation), productController.create);
+router.post(
+  "/",
+  authenticate,
+  validateBody(createProductValidation),
+  productController.create
+);
 
 /**
  * @openapi
@@ -94,6 +121,8 @@ router.post('/', validateBody(createProductValidation), productController.create
  *     summary: Update a product
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -123,11 +152,14 @@ router.post('/', validateBody(createProductValidation), productController.create
  *     responses:
  *       200:
  *         description: Product updated successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Product not found
  */
 router.put(
-  '/:id',
+  "/:id",
+  authenticate,
   validateParams(productIdValidation),
   validateBody(updateProductValidation),
   productController.update
@@ -140,6 +172,8 @@ router.put(
  *     summary: Delete a product
  *     tags:
  *       - Products
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -150,9 +184,16 @@ router.put(
  *     responses:
  *       200:
  *         description: Product deleted successfully
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Product not found
  */
-router.delete('/:id', validateParams(productIdValidation), productController.deleteProduct);
+router.delete(
+  "/:id",
+  authenticate,
+  validateParams(productIdValidation),
+  productController.deleteProduct
+);
 
 export default router;
