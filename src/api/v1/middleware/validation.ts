@@ -60,7 +60,7 @@ export const validateQuery = (schema: ObjectSchema) => {
       return;
     }
 
-    req.query = value;
+    res.locals.query = value;
 
     next();
   };
