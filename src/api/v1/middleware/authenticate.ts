@@ -34,6 +34,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
         next(
             new AppError("Unauthorized: INVALID TOKEN", HTTP_STATUS.UNAUTHORIZED)
-        )
+        );
     }
 };

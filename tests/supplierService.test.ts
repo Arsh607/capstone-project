@@ -43,7 +43,7 @@ describe("productServices", () => {
 
       mockedProductRepository.getAllProducts.mockResolvedValue(products);
 
-      const result = await productServices.getAll();
+      const result = await productServices.getAll({});
 
       expect(result).toEqual(products);
       expect(mockedProductRepository.getAllProducts).toHaveBeenCalledTimes(1);
