@@ -59,50 +59,50 @@ npm start
 API will run at - http://localhost:3000
 
 
-##Core Features
-###Product Management
-Create, update, delete, and retrieve products
-Includes fields like name, description, price, quantity, category, and supplierId
+## Core Features
+### Product Management
+- Create, update, delete, and retrieve products
+- Includes fields like name, description, price, quantity, category, and supplierId
 
-###Supplier Management
-Manage supplier details
-Includes name, email, phone number, and address
+### Supplier Management
+- Manage supplier details
+- Includes name, email, phone number, and address
 
-###Inventory Transactions
-Track stock changes (add, remove, adjust)
-Automatically updates product quantity
+### Inventory Transactions
+- Track stock changes (add, remove, adjust)
+- Automatically updates product quantity
 
-###Authentication & Authorization
-Firebase Authentication integration
-Token-based authentication
-Role-based access control (admin, manager, employee)
+### Authentication & Authorization
+- Firebase Authentication integration
+- Token-based authentication
+- Role-based access control (admin, manager, employee)
 
-###Filtering
-Supports flexible query-based filtering.
+### Filtering
+- Supports flexible query-based filtering.
 
-Examples:
+- Examples:
 /products?category=Electronics
 /products?minPrice=100&maxQuantity=20
 /transactions?productId=prod_1&type=add
 
-###Rate Limiting
-Prevents abuse of API endpoints
-Limits number of requests per user/IP
-Stricter limits on authentication routes
+### Rate Limiting
+- Prevents abuse of API endpoints
+- Limits number of requests per user/IP
+- Stricter limits on authentication routes
 
-###Validation
-Joi-based validation for body, params, and query
-Ensures clean and consistent data
+### Validation
+- Joi-based validation for body, params, and query
+- Ensures clean and consistent data
 
-###Error Handling
-Centralized global error handler
-Handles validation, authentication, and server errors
+### Error Handling
+- Centralized global error handler
+- Handles validation, authentication, and server errors
 
-###API Documentation
-Swagger (OpenAPI) documentation available
+### -API Documentation
+- Swagger (OpenAPI) documentation available
 
-##Example Endpoints
-###Get All Products
+## Example Endpoints
+### Get All Products
 
 Method: GET
 URL:
@@ -116,36 +116,36 @@ Example Response:
   "count": 10,
   "data": []
 }
-###Create Product
+### Create Product
 
 Method: POST
 URL:
 
 http://localhost:3000/api/v1/products
 
-###Get Product by ID
+### Get Product by ID
 
 Method: GET
 URL:
 
 http://localhost:3000/api/v1/products/prod_1
 
-###Create Transaction
+### Create Transaction
 Method: POST
 URL:
 
 http://localhost:3000/api/v1/transactions
 
-###Sign In
+### Sign In
 Method: POST
 URL:
 
 http://localhost:3000/api/v1/auth/signIn
 
-##Public API Documentation
-Link - https://arsh607.github.io/capstone-project/
+## Public API Documentation
+- Link - https://arsh607.github.io/capstone-project/
 
-##Local access to documentation
+## Local access to documentation
 When running the application locally, the documentation can be accessed using http://localhost:3000/api-docs/
 
 
