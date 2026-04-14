@@ -27,12 +27,12 @@ Make sure the following are installed:
 ```bash
 git clone https://github.com/Arsh607/capstone-project
 cd https://github.com/Arsh607/capstone-project
-
+```
 ### Step 2: Install Dependencies
 
 ```bash
 npm install
-
+```
 ### Step 3: Environment Variables
 
 Create a .env file in the root directory.
@@ -55,7 +55,7 @@ Ensure it is added to .gitignore.
 
 ```bash
 npm start
-
+```
 API will run at - http://localhost:3000
 
 
