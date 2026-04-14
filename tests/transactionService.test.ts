@@ -41,7 +41,7 @@ describe("transactionServices", () => {
 
       mockedTransactionRepository.getAllTransactionsFromDB.mockResolvedValue(transactions as any);
 
-      const result = await transactionServices.getAllTransactions();
+      const result = await transactionServices.getAllTransactions({});
 
       expect(result).toEqual(transactions);
     });
