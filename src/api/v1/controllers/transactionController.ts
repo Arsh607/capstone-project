@@ -8,7 +8,14 @@ export const getAll = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const transactions = await transactionServices.getAllTransactions();
+    const filters = {
+      productId: req.query.productId as string | undefined,
+      type: req.query.type as "add" | "remove" | "adjust" | undefined,
+      startDate: req.query.startDate as string | undefined,
+      endDate: req.query.endDate as string | undefined
+    };
+
+    const transactions = await transactionServices.getAllTransactions(filters);
 
     res.status(HTTP_STATUS.OK).json({
       message: "Transactions retrieved successfully",

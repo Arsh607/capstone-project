@@ -25,3 +25,12 @@ export interface UpdateProductInput {
     category?: string,
     supplierId?: string
 };
+
+export interface ProductFilter {
+  category?: string;
+  supplierId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
+};

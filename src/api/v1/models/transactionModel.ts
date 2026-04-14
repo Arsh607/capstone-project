@@ -20,3 +20,10 @@ export interface UpdateTransactionInput {
   type?: "add" | "remove" | "adjust";
   notes?: string;
 };
+
+export interface TransactionFilter {
+  productId?: string;
+  type?: "add" | "remove" | "adjust";
+  startDate?: string;
+  endDate?: string;
+}

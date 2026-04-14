@@ -1,7 +1,14 @@
 import express, { Router } from "express";
-import * as inventoryController from '../controllers/transactionController';
-import { createTransactionValidation, updateTransactionValidation, transactionIdValidation } from "../validation/transactionValidation";
-import { validateParams, validateBody } from "../middleware/validation";
+import * as inventoryController from "../controllers/transactionController";
+import {
+  createTransactionValidation,
+  updateTransactionValidation,
+  transactionIdValidation,
+  transactionFilterValidation,
+} from "../validation/transactionValidation";
+import { validateParams, validateBody, validateQuery } from "../middleware/validation";
+import { authenticate } from "../middleware/authenticate";
+import { isAuthorized } from "../middleware/authorize";
 
 const router: Router = express.Router();
 
@@ -10,21 +17,64 @@ const router: Router = express.Router();
  * /api/v1/transactions:
  *   get:
  *     summary: Get all inventory transactions
+ *     description: Accessible by admin, manager, and employee roles. Supports filtering using query parameters.
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: productId
+ *         schema:
+ *           type: string
+ *           pattern: "^prod_\\d+$"
+ *         example: prod_1
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [add, remove, adjust]
+ *         example: add
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: 2026-04-01T00:00:00.000Z
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: 2026-04-30T23:59:59.999Z
  *     responses:
  *       200:
  *         description: Transactions retrieved successfully
+ *       400:
+ *         description: Invalid query parameters
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       403:
+ *         description: Forbidden (insufficient role)
  */
-router.get('/', inventoryController.getAll);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
+  validateQuery(transactionFilterValidation),
+  inventoryController.getAll
+);
 
 /**
  * @openapi
  * /api/v1/transactions/{id}:
  *   get:
  *     summary: Get a transaction by ID
+ *     description: Accessible by admin, manager, and employee roles.
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -35,18 +85,31 @@ router.get('/', inventoryController.getAll);
  *     responses:
  *       200:
  *         description: Transaction retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Transaction not found
  */
-router.get('/:id', validateParams(transactionIdValidation), inventoryController.getById);
+router.get(
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
+  validateParams(transactionIdValidation),
+  inventoryController.getById
+);
 
 /**
  * @openapi
  * /api/v1/transactions:
  *   post:
  *     summary: Create a new inventory transaction
+ *     description: Accessible by admin, manager, and employee roles.
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -76,18 +139,31 @@ router.get('/:id', validateParams(transactionIdValidation), inventoryController.
  *         description: Transaction created successfully
  *       400:
  *         description: Validation error or insufficient stock
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Product not found
  */
-router.post('/', validateBody(createTransactionValidation), inventoryController.create);
+router.post(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
+  validateBody(createTransactionValidation),
+  inventoryController.create
+);
 
 /**
  * @openapi
  * /api/v1/transactions/{id}:
  *   put:
  *     summary: Update a transaction
+ *     description: Accessible by admin and manager roles only.
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -111,11 +187,17 @@ router.post('/', validateBody(createTransactionValidation), inventoryController.
  *     responses:
  *       200:
  *         description: Transaction updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Transaction not found
  */
 router.put(
-  '/:id',
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
   validateParams(transactionIdValidation),
   validateBody(updateTransactionValidation),
   inventoryController.update
@@ -126,8 +208,11 @@ router.put(
  * /api/v1/transactions/{id}:
  *   delete:
  *     summary: Delete a transaction
+ *     description: Accessible by admin and manager roles only.
  *     tags:
  *       - Transactions
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -138,9 +223,19 @@ router.put(
  *     responses:
  *       200:
  *         description: Transaction deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (insufficient role)
  *       404:
  *         description: Transaction not found
  */
-router.delete('/:id', validateParams(transactionIdValidation), inventoryController.deleteTransaction);
+router.delete(
+  "/:id",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  validateParams(transactionIdValidation),
+  inventoryController.deleteTransaction
+);
 
 export default router;
