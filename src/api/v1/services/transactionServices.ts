@@ -4,12 +4,13 @@ import {
   InventoryTransaction,
   CreateTransactionInput,
   UpdateTransactionInput,
+  TransactionFilter,
 } from "../models/transactionModel";
 import { AppError } from '../utils/AppError';
 import { HTTP_STATUS } from "../../../constants/httpsConstants";
 
-export const getAllTransactions = async (): Promise<InventoryTransaction[]> => {
-  return transactionRepository.getAllTransactionsFromDB();
+export const getAllTransactions = async (filters: TransactionFilter): Promise<InventoryTransaction[]> => { 
+  return transactionRepository.getAllTransactionsFromDB(filters);
 };
 
 export const getTransactionById = async (

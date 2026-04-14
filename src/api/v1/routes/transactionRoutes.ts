@@ -4,8 +4,9 @@ import {
   createTransactionValidation,
   updateTransactionValidation,
   transactionIdValidation,
+  transactionFilterValidation,
 } from "../validation/transactionValidation";
-import { validateParams, validateBody } from "../middleware/validation";
+import { validateParams, validateBody, validateQuery } from "../middleware/validation";
 import { authenticate } from "../middleware/authenticate";
 import { isAuthorized } from "../middleware/authorize";
 
@@ -16,14 +17,41 @@ const router: Router = express.Router();
  * /api/v1/transactions:
  *   get:
  *     summary: Get all inventory transactions
- *     description: Accessible by admin, manager, and employee roles.
+ *     description: Accessible by admin, manager, and employee roles. Supports filtering using query parameters.
  *     tags:
  *       - Transactions
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: productId
+ *         schema:
+ *           type: string
+ *           pattern: "^prod_\\d+$"
+ *         example: prod_1
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [add, remove, adjust]
+ *         example: add
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: 2026-04-01T00:00:00.000Z
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         example: 2026-04-30T23:59:59.999Z
  *     responses:
  *       200:
  *         description: Transactions retrieved successfully
+ *       400:
+ *         description: Invalid query parameters
  *       401:
  *         description: Unauthorized (missing or invalid token)
  *       403:
@@ -33,6 +61,7 @@ router.get(
   "/",
   authenticate,
   isAuthorized({ hasRole: ["admin", "manager", "employee"] }),
+  validateQuery(transactionFilterValidation),
   inventoryController.getAll
 );
 
