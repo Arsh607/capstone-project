@@ -1,12 +1,33 @@
 import { db } from "../../../config/firebaseConfig";
-import { InventoryTransaction, UpdateTransactionInput } from "../models/transactionModel";
+import { InventoryTransaction, UpdateTransactionInput, TransactionFilter } from "../models/transactionModel";
 
 const TRANSACTION_COLLECTION = "transactions";
 const COUNTER_COLLECTION = "count";
 const TRANSACTION_COUNTER_DOC = "transactions";
 
-export const getAllTransactionsFromDB = async (): Promise<InventoryTransaction[]> => {
-  const snapshot = await db.collection(TRANSACTION_COLLECTION).orderBy("id").get();
+export const getAllTransactionsFromDB = async (
+  filters: TransactionFilter
+): Promise<InventoryTransaction[]> => {
+  let query: FirebaseFirestore.Query = db.collection(TRANSACTION_COLLECTION);
+
+  if (filters.productId) {
+    query = query.where("productId", "==", filters.productId);
+  }
+
+  if (filters.type) {
+    query = query.where("type", "==", filters.type);
+  }
+
+  if (filters.startDate) {
+    query = query.where("createdAt", ">=", filters.startDate);
+  }
+
+  if (filters.endDate) {
+    query = query.where("createdAt", "<=", filters.endDate);
+  }
+
+  const snapshot = await query.get();
+
   return snapshot.docs.map((doc) => doc.data() as InventoryTransaction);
 };
 

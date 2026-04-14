@@ -1,11 +1,26 @@
 import * as productRepository from '../repositories/productRepository';
 import * as supplierRepository from '../repositories/supplierRepository';
-import { CreateProductInput, Product, UpdateProductInput } from '../models/productModel';
+import { CreateProductInput, Product, ProductFilter, UpdateProductInput } from '../models/productModel';
 import { AppError } from '../utils/AppError';
 import { HTTP_STATUS } from '../../../constants/httpsConstants';
 
-export const getAll = (): Promise<Product[]> => {
-  return productRepository.getAllProducts();
+export const getAll = (filters: ProductFilter): Promise<Product[]> => {
+  if (
+  filters.minPrice !== undefined &&
+  filters.maxPrice !== undefined &&
+  filters.minPrice > filters.maxPrice
+  ) {
+    throw new AppError("minPrice cannot be greater than maxPrice", HTTP_STATUS.BAD_REQUEST);
+  }
+
+  if (
+  filters.minQuantity !== undefined &&
+  filters.maxQuantity !== undefined &&
+  filters.minQuantity > filters.maxQuantity
+) {
+  throw new AppError("minQuantity cannot be greater than maxQuantity", HTTP_STATUS.BAD_REQUEST);
+}
+  return productRepository.getAllProducts(filters);
 };
 
 export const getById = (id: string): Promise<Product | null> => {
