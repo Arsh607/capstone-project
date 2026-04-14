@@ -4,7 +4,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "Task Management API Documentation",
+            title: "Inventory Management API Documentation",
             version: "1.0.0",
             description:
                 "This is the API documentation for the Task Management application.",
