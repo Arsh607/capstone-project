@@ -12,10 +12,38 @@ import morgan from 'morgan';
 import { errorHandler } from './api/v1/middleware/errorHandler';
 import setupSwagger from './config/swagger';
 import { apiLimiter, authLimiter } from './api/v1/middleware/rateLimiter';
+import helmet from 'helmet';
+import cors from 'cors';
+
 const app: Express = express();
 
 app.use(express.json());
 app.use(morgan('combined'));
+app.use(
+  helmet({
+    contentSecurityPolicy: false, 
+    crossOriginEmbedderPolicy: false, 
+    frameguard: { action: "deny" }, 
+    referrerPolicy: { policy: "no-referrer" },
+    hsts:
+      process.env.NODE_ENV === "production"
+        ? {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          }
+        : false,
+  })
+);
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
+    optionsSuccessStatus: 204,
+  })
+);
 app.use("/api/v1", apiLimiter)
 app.get('/api/v1/health', (req: Request, res: Response) => {
     res.status(HTTP_STATUS.OK).json({
@@ -28,8 +56,7 @@ app.get('/api/v1/health', (req: Request, res: Response) => {
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/suppliers', supplierRouter);
 app.use('/api/v1/transactions', transactionRouter);
-app.use("/api/v1", authLimiter)
-app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', authLimiter, authRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/users', userRouter);
 setupSwagger(app)
