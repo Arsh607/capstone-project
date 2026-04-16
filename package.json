@@ -25,6 +25,7 @@
   "homepage": "https://github.com/Arsh607/capstone-project#readme",
   "devDependencies": {
     "@redocly/cli": "^2.25.4",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/morgan": "^1.9.10",
@@ -43,6 +44,7 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express-rate-limit": "^8.3.2",
     "firebase": "^12.11.0",
