@@ -13,6 +13,7 @@ import { errorHandler } from './api/v1/middleware/errorHandler';
 import setupSwagger from './config/swagger';
 import { apiLimiter, authLimiter } from './api/v1/middleware/rateLimiter';
 import helmet from 'helmet';
+import cors from 'cors';
 
 const app: Express = express();
 
@@ -34,7 +35,15 @@ app.use(
         : false,
   })
 );
-
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
+    optionsSuccessStatus: 204,
+  })
+);
 app.use("/api/v1", apiLimiter)
 app.get('/api/v1/health', (req: Request, res: Response) => {
     res.status(HTTP_STATUS.OK).json({
