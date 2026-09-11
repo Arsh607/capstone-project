@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProducts, getProductById } from "../api/productApi";
+import axios from "axios";
+import {
+  getProducts,
+  getProductById,
+} from "../api/productApi";
 
 function Inventory() {
   const navigate = useNavigate();
@@ -13,15 +17,23 @@ function Inventory() {
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const response = await getProducts();
-      setProducts(response.data);
-    } catch (error: any) {
-        console.log("Product loading error:", error);
-        console.log("Backend response:", error.response?.data);
+      setError("");
 
-        setError(error.response?.data?.message || "Failed to load products.");
-    }
-    finally {
+      const response = await getProducts();
+
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Product loading error:", error);
+
+      if (axios.isAxiosError(error)) {
+        setError(
+          error.response?.data?.message ||
+            "Failed to load products."
+        );
+      } else {
+        setError("Failed to load products.");
+      }
+    } finally {
       setLoading(false);
     }
   };
@@ -30,47 +42,108 @@ function Inventory() {
     loadProducts();
   }, []);
 
-  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
     try {
-      await getProductById(searchId);
-      navigate(`/inventory/${searchId}`);
-    } catch {
-      setError("Product not found.");
+      setError("");
+
+      if (!searchId.trim()) {
+        setError("Please enter a product ID.");
+        return;
+      }
+
+      await getProductById(searchId.trim());
+
+      navigate(`/inventory/${searchId.trim()}`);
+    } catch (error) {
+      console.error("Product search error:", error);
+
+      if (axios.isAxiosError(error)) {
+        setError(
+          error.response?.data?.message ||
+            "Product not found."
+        );
+      } else {
+        setError("Product not found.");
+      }
     }
   };
 
   return (
-    <main style={{ minHeight: "100vh", background: "grey", color: "white", padding: "30px" }}>
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "grey",
+        color: "white",
+        padding: "30px",
+      }}
+    >
       <h1 style={{ color: "cyan" }}>Inventory</h1>
 
-      <button onClick={() => navigate("/dashboard")}>Back to Dashboard</button>
+      <button
+        onClick={() => navigate("/dashboard")}
+      >
+        Back to Dashboard
+      </button>
 
       <section style={{ marginTop: "25px" }}>
-        <button onClick={() => navigate("/inventory/create")}>
+        <button
+          onClick={() =>
+            navigate("/inventory/create")
+          }
+        >
           Create New Product
         </button>
       </section>
 
-      <form onSubmit={handleSearch} style={{ marginTop: "25px" }}>
+      <form
+        onSubmit={handleSearch}
+        style={{ marginTop: "25px" }}
+      >
         <input
           placeholder="Search product by ID e.g. prod_1"
           value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
+          onChange={(e) =>
+            setSearchId(e.target.value)
+          }
         />
 
-        <button type="submit">Search</button>
+        <button type="submit">
+          Search
+        </button>
       </form>
 
-      {error && <p style={{ color: "white" }}>{error}</p>}
+      {error && (
+        <p
+          style={{
+            color: "red",
+            marginTop: "20px",
+            fontWeight: "bold",
+          }}
+        >
+          {error}
+        </p>
+      )}
 
-      <h2 style={{ color: "cyan", marginTop: "30px" }}>Existing Products</h2>
+      <h2
+        style={{
+          color: "cyan",
+          marginTop: "30px",
+        }}
+      >
+        Existing Products
+      </h2>
 
       {loading ? (
         <p>Loading products...</p>
       ) : (
-        <table border={1} cellPadding={10}>
+        <table
+          border={1}
+          cellPadding={10}
+        >
           <thead>
             <tr>
               <th>ID</th>
@@ -86,8 +159,14 @@ function Inventory() {
             {products.map((product) => (
               <tr
                 key={product.id}
-                onClick={() => navigate(`/inventory/${product.id}`)}
-                style={{ cursor: "pointer" }}
+                onClick={() =>
+                  navigate(
+                    `/inventory/${product.id}`
+                  )
+                }
+                style={{
+                  cursor: "pointer",
+                }}
               >
                 <td>{product.id}</td>
                 <td>{product.name}</td>

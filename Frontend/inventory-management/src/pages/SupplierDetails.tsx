@@ -1,61 +1,59 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import {
-  getProductById,
-  updateProduct,
-  deleteProduct,
-} from "../api/productApi";
-import type { ProductInput } from "../api/productApi";
 
-function ProductDetails() {
+import {
+  getSupplierById,
+  updateSupplier,
+  deleteSupplier,
+} from "../api/supplierApi";
+
+import type { SupplierInput } from "../api/supplierApi";
+
+function SupplierDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<ProductInput>({
+  const [formData, setFormData] = useState<SupplierInput>({
     name: "",
-    description: "",
-    price: 0,
-    quantity: 0,
-    category: "Electronics",
-    supplierId: "",
+    email: "",
+    phoneNumber: "",
+    address: "",
   });
 
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadProduct = async () => {
+    const loadSupplier = async () => {
       if (!id) return;
 
       try {
         setError("");
 
-        const response = await getProductById(id);
-        const product = response.data;
+        const response = await getSupplierById(id);
+        const supplier = response.data;
 
         setFormData({
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          quantity: product.quantity,
-          category: product.category,
-          supplierId: product.supplierId,
+          name: supplier.name,
+          email: supplier.email,
+          phoneNumber: supplier.phoneNumber,
+          address: supplier.address,
         });
       } catch (error) {
-        console.error("Failed to load product:", error);
+        console.error("Failed to load supplier:", error);
 
         if (axios.isAxiosError(error)) {
           setError(
             error.response?.data?.message ||
-              "Failed to load product."
+              "Failed to load supplier."
           );
         } else {
-          setError("Failed to load product.");
+          setError("Failed to load supplier.");
         }
       }
     };
 
-    loadProduct();
+    loadSupplier();
   }, [id]);
 
   const handleUpdate = async (
@@ -68,18 +66,19 @@ function ProductDetails() {
     try {
       setError("");
 
-      await updateProduct(id, formData);
-      navigate("/inventory");
+      await updateSupplier(id, formData);
+
+      navigate("/suppliers");
     } catch (error) {
-      console.error("Failed to update product:", error);
+      console.error("Failed to update supplier:", error);
 
       if (axios.isAxiosError(error)) {
         setError(
           error.response?.data?.message ||
-            "Failed to update product."
+            "Failed to update supplier."
         );
       } else {
-        setError("Failed to update product.");
+        setError("Failed to update supplier.");
       }
     }
   };
@@ -90,18 +89,19 @@ function ProductDetails() {
     try {
       setError("");
 
-      await deleteProduct(id);
-      navigate("/inventory");
+      await deleteSupplier(id);
+
+      navigate("/suppliers");
     } catch (error) {
-      console.error("Failed to delete product:", error);
+      console.error("Failed to delete supplier:", error);
 
       if (axios.isAxiosError(error)) {
         setError(
           error.response?.data?.message ||
-            "Failed to delete product."
+            "Failed to delete supplier."
         );
       } else {
-        setError("Failed to delete product.");
+        setError("Failed to delete supplier.");
       }
     }
   };
@@ -115,9 +115,13 @@ function ProductDetails() {
         padding: "30px",
       }}
     >
-      <h1 style={{ color: "cyan" }}>Product Details</h1>
+      <h1 style={{ color: "cyan" }}>
+        Supplier Details
+      </h1>
 
-      <button onClick={() => navigate("/inventory")}>
+      <button
+        onClick={() => navigate("/suppliers")}
+      >
         Back
       </button>
 
@@ -143,6 +147,7 @@ function ProductDetails() {
         }}
       >
         <input
+          placeholder="Name"
           value={formData.name}
           onChange={(e) =>
             setFormData({
@@ -153,65 +158,40 @@ function ProductDetails() {
         />
 
         <input
-          value={formData.description}
+          placeholder="Email"
+          value={formData.email}
           onChange={(e) =>
             setFormData({
               ...formData,
-              description: e.target.value,
+              email: e.target.value,
             })
           }
         />
 
         <input
-          type="number"
-          value={formData.price}
+          placeholder="Phone Number"
+          value={formData.phoneNumber}
           onChange={(e) =>
             setFormData({
               ...formData,
-              price: Number(e.target.value),
+              phoneNumber: e.target.value,
             })
           }
         />
 
         <input
-          type="number"
-          value={formData.quantity}
+          placeholder="Address"
+          value={formData.address}
           onChange={(e) =>
             setFormData({
               ...formData,
-              quantity: Number(e.target.value),
-            })
-          }
-        />
-
-        <select
-          value={formData.category}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              category: e.target.value,
-            })
-          }
-        >
-          <option>Electronics</option>
-          <option>Office Supplies</option>
-          <option>Furniture</option>
-          <option>Food</option>
-          <option>Home Supplies</option>
-        </select>
-
-        <input
-          value={formData.supplierId}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              supplierId: e.target.value,
+              address: e.target.value,
             })
           }
         />
 
         <button type="submit">
-          Update Product
+          Update Supplier
         </button>
       </form>
 
@@ -222,10 +202,10 @@ function ProductDetails() {
           background: "red",
         }}
       >
-        Delete Product
+        Delete Supplier
       </button>
     </main>
   );
 }
 
-export default ProductDetails;
+export default SupplierDetails;
