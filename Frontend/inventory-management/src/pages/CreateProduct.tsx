@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createProduct} from "../api/productApi";
-import type { ProductInput, CreateProductInput } from "../api/productApi";
+import type { CreateProductInput } from "../api/productApi";
 function CreateProduct() {
   const navigate = useNavigate();
 
