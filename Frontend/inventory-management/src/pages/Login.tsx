@@ -107,7 +107,7 @@ function Login() {
             style={{
                 gridColumn: "1 / 3",
                 textAlign: "center",
-                color: "red",
+                color: "white",
             }}
             >
             {error}
