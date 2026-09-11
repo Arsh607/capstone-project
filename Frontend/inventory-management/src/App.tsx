@@ -7,6 +7,7 @@ import Transactions from "./pages/Transactions";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import CreateProduct from "./pages/CreateProduct";
 import ProductDetails from "./pages/ProductDetails";
+import SupplierDetails from "./pages/SupplierDetails";
 
 function App() {
   return (
@@ -53,6 +54,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Suppliers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/suppliers/:id"
+          element={
+            <ProtectedRoute>
+              <SupplierDetails/>  
             </ProtectedRoute>
           }
         />
