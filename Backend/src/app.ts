@@ -35,9 +35,25 @@ app.use(
         : false,
   })
 );
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.ALLOWED_ORIGIN,
+].filter(Boolean) as string[];
 app.use(
   cors({
-    origin: process.env.ALLOWED_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow requests with no browser origin, such as Postman
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
