@@ -124,7 +124,7 @@ function ProductDetails() {
       {error && (
         <p
           style={{
-            color: "red",
+            color: "white",
             marginTop: "20px",
             fontWeight: "bold",
           }}

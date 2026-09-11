@@ -65,7 +65,7 @@ function CreateProduct() {
       {error && (
         <p
           style={{
-            color: "red",
+            color: "white",
             marginTop: "20px",
             fontWeight: "bold",
           }}
