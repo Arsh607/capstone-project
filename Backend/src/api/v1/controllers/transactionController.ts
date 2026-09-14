@@ -101,27 +101,3 @@ export const update = async (
   }
 };
 
-export const deleteTransaction = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const id = String(req.params.id);
-    const deletedTransaction = await transactionServices.deleteTransaction(id);
-
-    if (!deletedTransaction) {
-      res.status(HTTP_STATUS.NOT_FOUND).json({
-        message: "Transaction not found",
-      });
-      return;
-    }
-
-    res.status(HTTP_STATUS.OK).json({
-      message: "Transaction deleted successfully",
-      data: deletedTransaction,
-    });
-  } catch (error) {
-    next(error);
-  }
-};

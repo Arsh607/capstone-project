@@ -203,39 +203,4 @@ router.put(
   inventoryController.update
 );
 
-/**
- * @openapi
- * /api/v1/transactions/{id}:
- *   delete:
- *     summary: Delete a transaction
- *     description: Accessible by admin and manager roles only.
- *     tags:
- *       - Transactions
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         example: trans_1
- *     responses:
- *       200:
- *         description: Transaction deleted successfully
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Forbidden (insufficient role)
- *       404:
- *         description: Transaction not found
- */
-router.delete(
-  "/:id",
-  authenticate,
-  isAuthorized({ hasRole: ["admin", "manager"] }),
-  validateParams(transactionIdValidation),
-  inventoryController.deleteTransaction
-);
-
 export default router;

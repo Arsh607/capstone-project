@@ -3,7 +3,6 @@ import axios from "axios";
 import {
   getTransactions,
   createTransaction,
-  deleteTransaction,
 } from "../api/transactionApi";
 import type { TransactionInput } from "../api/transactionApi";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +12,6 @@ function Transactions() {
 
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState<TransactionInput>({
@@ -78,26 +76,6 @@ function Transactions() {
         );
       } else {
         setError("Failed to create transaction.");
-      }
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      setError("");
-
-      await deleteTransaction(id);
-      await loadTransactions();
-    } catch (error) {
-      console.error("Error deleting transaction:", error);
-
-      if (axios.isAxiosError(error)) {
-        setError(
-          error.response?.data?.message ||
-            "Failed to delete transaction."
-        );
-      } else {
-        setError("Failed to delete transaction.");
       }
     }
   };
@@ -200,7 +178,6 @@ function Transactions() {
               <th>Quantity Changed</th>
               <th>Created At</th>
               <th>Notes</th>
-              <th>Action</th>
             </tr>
           </thead>
 
@@ -213,15 +190,6 @@ function Transactions() {
                 <td>{transaction.quantityChanged}</td>
                 <td>{transaction.createdAt}</td>
                 <td>{transaction.notes || "N/A"}</td>
-                <td>
-                  <button
-                    onClick={() =>
-                      handleDelete(transaction.id)
-                    }
-                  >
-                    Delete
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>

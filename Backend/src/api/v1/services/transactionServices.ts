@@ -75,14 +75,3 @@ export const updateTransaction = async (
   return updatedTransaction;
 };
 
-export const deleteTransaction = async (
-  id: string
-): Promise<InventoryTransaction> => {
-  const deletedTransaction = await transactionRepository.deleteTransactionFromDB(id);
-
-  if (!deletedTransaction) {
-    throw new AppError("Transaction not found", HTTP_STATUS.NOT_FOUND);
-  }
-
-  return deletedTransaction;
-};

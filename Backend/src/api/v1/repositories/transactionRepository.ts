@@ -97,18 +97,3 @@ export const updateTransactionInDB = async (
   return updatedTransaction;
 };
 
-export const deleteTransactionFromDB = async (
-  id: string
-): Promise<InventoryTransaction | null> => {
-  const docRef = db.collection(TRANSACTION_COLLECTION).doc(id);
-  const doc = await docRef.get();
-
-  if (!doc.exists) {
-    return null;
-  }
-
-  const deletedTransaction = doc.data() as InventoryTransaction;
-
-  await docRef.delete();
-  return deletedTransaction;
-};
